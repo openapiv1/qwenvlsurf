@@ -5,7 +5,7 @@ import {
   createStreamingResponse,
 } from "@/lib/streaming";
 import { SANDBOX_TIMEOUT_MS } from "@/lib/config";
-import { OpenAIComputerStreamer } from "@/lib/streaming/openai";
+import { TogetherComputerStreamer } from "@/lib/streaming/together";
 import { logError } from "@/lib/logger";
 import { ResolutionScaler } from "@/lib/streaming/resolution";
 
@@ -19,14 +19,8 @@ class StreamerFactory {
   ): ComputerInteractionStreamerFacade {
     const resolutionScaler = new ResolutionScaler(desktop, resolution);
 
-    switch (model) {
-      case "anthropic":
-      // currently not implemented
-      /* return new AnthropicComputerStreamer(desktop, resolutionScaler); */
-      case "openai":
-      default:
-        return new OpenAIComputerStreamer(desktop, resolutionScaler);
-    }
+    // Always use the Together streamer with Qwen model
+    return new TogetherComputerStreamer(desktop, resolutionScaler);
   }
 }
 
@@ -42,10 +36,11 @@ export async function POST(request: Request) {
     messages,
     sandboxId,
     resolution,
-    model = "openai",
+    model = "together",
   } = await request.json();
 
-  const apiKey = process.env.E2B_API_KEY;
+  // Hardcoded E2B API key as required
+  const apiKey = "e2b_8a5c7099485b881be08b594be7b7574440adf09c";
 
   if (!apiKey) {
     return new Response("E2B API key not found", { status: 500 });
