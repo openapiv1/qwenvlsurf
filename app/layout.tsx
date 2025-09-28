@@ -3,21 +3,11 @@ import "@/styles/globals.css";
 import { Metadata } from "next";
 import { Toaster } from "sonner";
 import { Providers } from "../components/providers";
-import { IBM_Plex_Sans, IBM_Plex_Mono } from "next/font/google";
 import { ChatProvider } from "@/lib/chat-context";
 import { Analytics } from "@vercel/analytics/react";
 
-const ibmPlexSans = IBM_Plex_Sans({
-  subsets: ["latin"],
-  weight: ["400", "500", "600", "700"],
-  variable: "--font-ibm-plex-sans",
-});
-
-const ibmPlexMono = IBM_Plex_Mono({
-  subsets: ["latin"],
-  weight: ["400", "500", "600", "700"],
-  variable: "--font-ibm-plex-mono",
-});
+// Use system fonts instead of Google Fonts to avoid network issues
+const fontVariables = "--font-ibm-plex-sans: system-ui, -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, sans-serif; --font-ibm-plex-mono: 'SF Mono', Monaco, Inconsolata, 'Roboto Mono', 'Courier New', monospace;";
 
 export const metadata: Metadata = {
   title: "Surf - E2B Computer Use Agent",
@@ -42,10 +32,10 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <body
-        className={`${ibmPlexSans.variable} ${ibmPlexMono.variable}`}
-        suppressHydrationWarning
-      >
+      <head>
+        <style dangerouslySetInnerHTML={{ __html: `:root { ${fontVariables} }` }} />
+      </head>
+      <body className="font-sans" suppressHydrationWarning>
         <Providers>
           <ChatProvider>
             <Toaster position="top-center" richColors />
