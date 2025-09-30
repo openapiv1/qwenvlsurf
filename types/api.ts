@@ -1,13 +1,23 @@
 /**
  * Type definitions for Surf Computer API and SSE events
  */
-import { ComputerAction } from "@/types/anthropic";
-import { ResponseComputerToolCall } from "openai/resources/responses/responses.mjs";
+
+// Define computer tool action types for Together/Qwen model
+interface ComputerToolAction {
+  action: "screenshot" | "wait" | "left_click" | "double_click" | "right_click" | "mouse_move" | "type" | "key" | "scroll" | "left_click_drag" | "bash";
+  coordinate?: [number, number];
+  start_coordinate?: [number, number];
+  text?: string;
+  duration?: number;
+  scroll_direction?: "up" | "down";
+  scroll_amount?: number;
+  command?: string;
+}
 
 /**
  * Model types supported by Surf
  */
-export type ComputerModel = "openai" | "anthropic";
+export type ComputerModel = "together";
 
 /**
  * SSE event types for client communication
@@ -34,9 +44,7 @@ export interface BaseSSEEvent {
  */
 export interface ActionEvent<T extends ComputerModel> extends BaseSSEEvent {
   type: SSEEventType.ACTION;
-  action: T extends "openai"
-    ? ResponseComputerToolCall["action"]
-    : ComputerAction;
+  action: ComputerToolAction;
 }
 
 /**

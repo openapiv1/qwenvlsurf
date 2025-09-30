@@ -1,9 +1,19 @@
 /**
  * Type definitions for chat messages and related functionality
  */
-import { ResponseComputerToolCall } from "openai/resources/responses/responses.mjs";
 import { ActionEvent, ComputerModel, SSEEventType } from "./api";
-import { ComputerAction } from "@/types/anthropic";
+
+// Define computer tool action types locally since we removed the other imports
+interface ComputerToolAction {
+  action: "screenshot" | "wait" | "left_click" | "double_click" | "right_click" | "mouse_move" | "type" | "key" | "scroll" | "left_click_drag" | "bash";
+  coordinate?: [number, number];
+  start_coordinate?: [number, number];
+  text?: string;
+  duration?: number;
+  scroll_direction?: "up" | "down";
+  scroll_amount?: number;
+  command?: string;
+}
 
 /**
  * Role of a chat message
@@ -50,9 +60,7 @@ export interface SystemChatMessage extends BaseChatMessage {
 export interface ActionChatMessage<T extends ComputerModel = ComputerModel>
   extends BaseChatMessage {
   role: "action";
-  action: T extends "openai"
-    ? ResponseComputerToolCall["action"]
-    : ComputerAction;
+  action: ComputerToolAction;
   status?: "pending" | "completed" | "failed";
   model: ComputerModel;
 }
@@ -60,7 +68,7 @@ export interface ActionChatMessage<T extends ComputerModel = ComputerModel>
 /**
  * Union type for all chat messages
  */
-export type ChatMessage<T extends ComputerModel = "openai"> =
+export type ChatMessage<T extends ComputerModel = "together"> =
   | UserChatMessage
   | AssistantChatMessage
   | SystemChatMessage

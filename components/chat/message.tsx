@@ -130,11 +130,8 @@ export function ChatMessage({ message, className }: ChatMessageProps) {
   const getRoleIcon = () => {
     if (isUser) return <User className="h-3 w-3" />;
     if (isAssistant) {
-      if ((message as AssistantChatMessage).model === "openai") {
-        return <OpenAiLogo className="h-3 w-3" />;
-      } else {
-        return <AnthropicLogo className="h-3 w-3" />;
-      }
+      // Always use a generic assistant icon since we only use Together/Qwen now
+      return <Info className="h-3 w-3" />;
     }
     return <Info className="h-3 w-3" />;
   };
